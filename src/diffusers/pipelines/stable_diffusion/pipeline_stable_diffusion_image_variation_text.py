@@ -20,7 +20,7 @@ import torch
 import PIL
 from diffusers.utils import is_accelerate_available
 from packaging import version
-from transformers import CLIPFeatureExtractor, CLIPVisionModelWithProjection, CLIPTextModel
+from transformers import CLIPFeatureExtractor, CLIPVisionModelWithProjection, CLIPTextModel, CLIPTokenizer
 
 from ...configuration_utils import FrozenDict
 from ...models import AutoencoderKL, UNet2DConditionModel
@@ -59,6 +59,9 @@ class StableDiffusionImageVariationTextPipeline(DiffusionPipeline):
             Frozen text-encoder. Stable Diffusion uses the text portion of
             [CLIP](https://huggingface.co/docs/transformers/model_doc/clip#transformers.CLIPTextModel), specifically
             the [clip-vit-large-patch14](https://huggingface.co/openai/clip-vit-large-patch14) variant.
+        tokenizer (`CLIPTokenizer`):
+            Tokenizer of class
+            [CLIPTokenizer](https://huggingface.co/docs/transformers/v4.21.0/en/model_doc/clip#transformers.CLIPTokenizer).            
         unet ([`UNet2DConditionModel`]): Conditional U-Net architecture to denoise the encoded image latents.
         scheduler ([`SchedulerMixin`]):
             A scheduler to be used in combination with `unet` to denoise the encoded image latents. Can be one of
@@ -76,6 +79,7 @@ class StableDiffusionImageVariationTextPipeline(DiffusionPipeline):
         vae: AutoencoderKL,
         image_encoder: CLIPVisionModelWithProjection,
         text_encoder: CLIPTextModel,
+        tokenizer: CLIPTokenizer,
         unet: UNet2DConditionModel,
         scheduler: Union[
             DDIMScheduler,
@@ -153,7 +157,7 @@ class StableDiffusionImageVariationTextPipeline(DiffusionPipeline):
 
         device = torch.device(f"cuda:{gpu_id}")
 
-        for cpu_offloaded_model in [self.unet, self.image_encoder, self.vae, self.safety_checker]:
+        for cpu_offloaded_model in [self.unet, self.image_encoder, self.text_encoder, self.vae, self.safety_checker]:
             if cpu_offloaded_model is not None:
                 cpu_offload(cpu_offloaded_model, device)
 
