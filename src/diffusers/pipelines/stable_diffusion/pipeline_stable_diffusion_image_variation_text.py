@@ -260,8 +260,6 @@ class StableDiffusionImageVariationTextPipeline(DiffusionPipeline):
         text_embeddings = text_embeddings[0]
         print("text_embeddings =", text_embeddings.shape)
 
-        # 
-
         # duplicate text embeddings for each generation per prompt, using mps friendly method
         bs_embed, seq_len, _ = text_embeddings.shape
         text_embeddings = text_embeddings.repeat(1, num_images_per_prompt, 1)

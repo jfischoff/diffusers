@@ -12,7 +12,7 @@ pipe.scheduler = DPMSolverMultistepScheduler.from_config(pipe.scheduler.config)
 
 pipe = pipe.to("cuda")
 
-prompt = "A head shot of Simon Cowell, studio lighting"
+prompt = "Simon Cowell"
 
 # open the image /home/jonathan/dreambooth/byct/byct-(48).jpg and run the pipeline on it
 
