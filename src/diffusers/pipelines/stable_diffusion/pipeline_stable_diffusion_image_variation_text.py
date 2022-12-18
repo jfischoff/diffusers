@@ -289,6 +289,7 @@ class StableDiffusionImageVariationTextPipeline(DiffusionPipeline):
     def __call__(
         self,
         image: Union[PIL.Image.Image, List[PIL.Image.Image], torch.FloatTensor],
+        prompt: Optional[Union[str, List[str]]] = None,
         height: Optional[int] = None,
         width: Optional[int] = None,
         num_inference_steps: int = 50,
@@ -311,6 +312,8 @@ class StableDiffusionImageVariationTextPipeline(DiffusionPipeline):
                 configuration of
                 [this](https://huggingface.co/lambdalabs/sd-image-variations-diffusers/blob/main/feature_extractor/preprocessor_config.json)
                 `CLIPFeatureExtractor`
+            prompt (`str` or `List[str]`, *optional*):
+                Optional prompt to guide the image generation.
             height (`int`, *optional*, defaults to self.unet.config.sample_size * self.vae_scale_factor):
                 The height in pixels of the generated image.
             width (`int`, *optional*, defaults to self.unet.config.sample_size * self.vae_scale_factor):

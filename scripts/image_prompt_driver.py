@@ -16,10 +16,14 @@ prompt = "a photo of an astronaut riding a horse on mars"
 
 # open the image /home/jonathan/dreambooth/byct/byct-(48).jpg and run the pipeline on it
 
+batchSize = 1
 
 with PIL.Image.open("/home/jonathan/Downloads/example1.jpg") as initialImage:
     # run the pipeline on the image and produce a batch of 50 images and set the steps to 1000
-    output = pipe(image=initialImage, num_images_per_prompt=4, num_inference_steps=50)
+    output = pipe(image=initialImage, 
+        num_images_per_prompt=batchSize, 
+        num_inference_steps=50,
+        guidance_scale=6.0)
     # save all the images to the current directory
     for i, image in enumerate(output.images):
         image.save(f"image-{i}.png")
