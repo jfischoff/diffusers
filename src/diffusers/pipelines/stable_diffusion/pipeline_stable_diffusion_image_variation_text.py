@@ -131,6 +131,7 @@ class StableDiffusionImageVariationTextPipeline(DiffusionPipeline):
         self.register_modules(
             vae=vae,
             image_encoder=image_encoder,
+            text_encoder=text_encoder,
             unet=unet,
             scheduler=scheduler,
             safety_checker=safety_checker,
