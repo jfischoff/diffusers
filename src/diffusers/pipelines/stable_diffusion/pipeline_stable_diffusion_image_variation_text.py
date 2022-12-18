@@ -189,6 +189,7 @@ class StableDiffusionImageVariationTextPipeline(DiffusionPipeline):
 
         image = image.to(device=device, dtype=dtype)
         image_embeddings = self.image_encoder(image).image_embeds
+        print("image_embeddings =", image_embeddings.shape)
         image_embeddings = image_embeddings.unsqueeze(1)
 
         # duplicate image embeddings for each generation per prompt, using mps friendly method
@@ -235,6 +236,8 @@ class StableDiffusionImageVariationTextPipeline(DiffusionPipeline):
         text_input_ids = text_inputs.input_ids
         untruncated_ids = self.tokenizer(prompt, padding="longest", return_tensors="pt").input_ids
 
+        print("text_input_ids =", text_input_ids.shape)
+
         if untruncated_ids.shape[-1] >= text_input_ids.shape[-1] and not torch.equal(text_input_ids, untruncated_ids):
             removed_text = self.tokenizer.batch_decode(untruncated_ids[:, self.tokenizer.model_max_length - 1 : -1])
             logger.warning(
@@ -251,7 +254,13 @@ class StableDiffusionImageVariationTextPipeline(DiffusionPipeline):
             text_input_ids.to(device),
             attention_mask=attention_mask,
         )
+
+        # print out the shape of the text embeddings and prefix "text_embeddings ="
+
         text_embeddings = text_embeddings[0]
+        print("text_embeddings =", text_embeddings.shape)
+
+        # 
 
         # duplicate text embeddings for each generation per prompt, using mps friendly method
         bs_embed, seq_len, _ = text_embeddings.shape
@@ -505,6 +514,15 @@ class StableDiffusionImageVariationTextPipeline(DiffusionPipeline):
                 prompt, device, num_images_per_prompt, do_classifier_free_guidance, negative_prompt
             )
 
+            # 3.1. Average image and text embeddings tensors
+            # print out the shape of image_embeddings and text_embeddings
+            modified = image_embeddings.repeat(1, 77, 1)
+            print(modified.shape)
+            print(text_embeddings.shape)
+            image_embeddings = (modified + text_embeddings) / 2.0
+
+
+
         # 4. Prepare timesteps
         self.scheduler.set_timesteps(num_inference_steps, device=device)
         timesteps = self.scheduler.timesteps
@@ -533,7 +551,8 @@ class StableDiffusionImageVariationTextPipeline(DiffusionPipeline):
                 latent_model_input = torch.cat([latents] * 2) if do_classifier_free_guidance else latents
                 latent_model_input = self.scheduler.scale_model_input(latent_model_input, t)
 
-                # predict the noise residual
+                # predict the noise residuals
+                print("final shape of image_embeddings:", image_embeddings.shape)
                 noise_pred = self.unet(latent_model_input, t, encoder_hidden_states=image_embeddings).sample
 
                 # perform guidance
