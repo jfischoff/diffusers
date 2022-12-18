@@ -12,7 +12,7 @@ pipe.scheduler = DPMSolverMultistepScheduler.from_config(pipe.scheduler.config)
 
 pipe = pipe.to("cuda")
 
-prompt = "a photo of an astronaut riding a horse on mars"
+prompt = "A portrait of a handsome man"
 
 # open the image /home/jonathan/dreambooth/byct/byct-(48).jpg and run the pipeline on it
 
@@ -20,7 +20,9 @@ batchSize = 1
 
 with PIL.Image.open("/home/jonathan/Downloads/example1.jpg") as initialImage:
     # run the pipeline on the image and produce a batch of 50 images and set the steps to 1000
-    output = pipe(image=initialImage, 
+    output = pipe(
+        image=initialImage, 
+        prompt=prompt,
         num_images_per_prompt=batchSize, 
         num_inference_steps=50,
         guidance_scale=6.0)
