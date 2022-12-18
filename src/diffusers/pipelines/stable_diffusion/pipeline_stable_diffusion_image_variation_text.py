@@ -20,7 +20,7 @@ import torch
 import PIL
 from diffusers.utils import is_accelerate_available
 from packaging import version
-from transformers import CLIPFeatureExtractor, CLIPVisionModelWithProjection
+from transformers import CLIPFeatureExtractor, CLIPVisionModelWithProjection, CLIPTextModel
 
 from ...configuration_utils import FrozenDict
 from ...models import AutoencoderKL, UNet2DConditionModel
@@ -55,6 +55,10 @@ class StableDiffusionImageVariationTextPipeline(DiffusionPipeline):
             Frozen CLIP image-encoder. Stable Diffusion Image Variation uses the vision portion of
             [CLIP](https://huggingface.co/docs/transformers/model_doc/clip#transformers.CLIPVisionModelWithProjection),
             specifically the [clip-vit-large-patch14](https://huggingface.co/openai/clip-vit-large-patch14) variant.
+        text_encoder ([`CLIPTextModel`]):
+            Frozen text-encoder. Stable Diffusion uses the text portion of
+            [CLIP](https://huggingface.co/docs/transformers/model_doc/clip#transformers.CLIPTextModel), specifically
+            the [clip-vit-large-patch14](https://huggingface.co/openai/clip-vit-large-patch14) variant.
         unet ([`UNet2DConditionModel`]): Conditional U-Net architecture to denoise the encoded image latents.
         scheduler ([`SchedulerMixin`]):
             A scheduler to be used in combination with `unet` to denoise the encoded image latents. Can be one of
@@ -71,6 +75,7 @@ class StableDiffusionImageVariationTextPipeline(DiffusionPipeline):
         self,
         vae: AutoencoderKL,
         image_encoder: CLIPVisionModelWithProjection,
+        text_encoder: CLIPTextModel,
         unet: UNet2DConditionModel,
         scheduler: Union[
             DDIMScheduler,
