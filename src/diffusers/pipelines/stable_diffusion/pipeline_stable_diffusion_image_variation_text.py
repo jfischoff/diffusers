@@ -136,6 +136,7 @@ class StableDiffusionImageVariationTextPipeline(DiffusionPipeline):
             vae=vae,
             image_encoder=image_encoder,
             text_encoder=text_encoder,
+            tokenizer=tokenizer,
             unet=unet,
             scheduler=scheduler,
             safety_checker=safety_checker,
