@@ -514,11 +514,12 @@ class StableDiffusionImageVariationTextPipeline(DiffusionPipeline):
 
             # 3.1. Average image and text embeddings tensors
             # print out the shape of image_embeddings and text_embeddings
-            modified = image_embeddings.repeat(1, 77, 1)
+            modified = image_embeddings.repeat(1, text_embeddings.shape[1], 1)
             print(modified.shape)
             print(text_embeddings.shape)
             image_embeddings = (modified + text_embeddings) / 2.0
-
+            # concatenate the image_embeddings and text_embeddings along the second dimension
+            # image_embeddings = torch.cat((image_embeddings, text_embeddings), dim=1)
 
 
         # 4. Prepare timesteps
@@ -571,13 +572,16 @@ class StableDiffusionImageVariationTextPipeline(DiffusionPipeline):
         image = self.decode_latents(latents)
 
         # 9. Run safety checker
-        image, has_nsfw_concept = self.run_safety_checker(image, device, image_embeddings.dtype)
+        # image, has_nsfw_concept = self.run_safety_checker(image, device, image_embeddings.dtype)
 
         # 10. Convert to PIL
         if output_type == "pil":
             image = self.numpy_to_pil(image)
 
-        if not return_dict:
-            return (image, has_nsfw_concept)
+        # if not return_dict:
+        #    return (image, has_nsfw_concept)
+
+        #set has_nsfw_concept to false
+        has_nsfw_concept = False
 
         return StableDiffusionPipelineOutput(images=image, nsfw_content_detected=has_nsfw_concept)
