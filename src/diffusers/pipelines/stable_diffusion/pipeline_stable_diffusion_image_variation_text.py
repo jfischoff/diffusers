@@ -517,10 +517,10 @@ class StableDiffusionImageVariationTextPipeline(DiffusionPipeline):
             modified = image_embeddings.repeat(1, text_embeddings.shape[1], 1)
             print(modified.shape)
             print(text_embeddings.shape)
-            image_embeddings = (modified + text_embeddings) / 2.0
+            # image_embeddings = (modified + text_embeddings) / 2.0
             # concatenate the image_embeddings and text_embeddings along the second dimension
-            # image_embeddings = torch.cat((image_embeddings, text_embeddings), dim=1)
-
+            image_embeddings = torch.cat((image_embeddings, text_embeddings), dim=1)
+            
 
         # 4. Prepare timesteps
         self.scheduler.set_timesteps(num_inference_steps, device=device)

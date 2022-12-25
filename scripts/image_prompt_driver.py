@@ -2,7 +2,7 @@ from diffusers import StableDiffusionImageVariationTextPipeline, DPMSolverMultis
 import PIL
 import torch
 
-model_id = "/home/jonathan/models/sd-image-variations-diffusers-2"
+model_id = "/home/jonathan/models/sd-image-variations-diffusers-2/"
 
 # Use the DPMSolverMultistepScheduler (DPM-Solver++) scheduler here instead
 pipe = StableDiffusionImageVariationTextPipeline.from_pretrained(model_id, torch_dtype=torch.float16)
@@ -12,13 +12,13 @@ pipe.scheduler = DPMSolverMultistepScheduler.from_config(pipe.scheduler.config)
 
 pipe = pipe.to("cuda")
 
-prompt = "a man"
+prompt = "Simon Cowell"
 
 # open the image /home/jonathan/dreambooth/byct/byct-(48).jpg and run the pipeline on it
 
 batchSize = 1
 
-with PIL.Image.open("/home/jonathan/Downloads/example1.jpg") as initialImage:
+with PIL.Image.open("/home/jonathan/Downloads/00507-1983529788-Portrait of a.png") as initialImage:
     # run the pipeline on the image and produce a batch of 50 images and set the steps to 1000
     output = pipe(
         image=initialImage, 
