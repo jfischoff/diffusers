@@ -449,7 +449,7 @@ class FlaxModelMixin:
 
         for key in state.keys():
             if key in shape_state and state[key].shape != shape_state[key].shape:
-                raise ValueError(
+                logger.warning(
                     f"Trying to load the pretrained weight for {key} failed: checkpoint has shape "
                     f"{state[key].shape} which is incompatible with the model shape {shape_state[key].shape}. "
                 )
